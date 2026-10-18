@@ -43,3 +43,17 @@ resource "aws_iam_user_policy_attachment" "sally_custom_policy" {
   user       = aws_iam_user.sally.name
   policy_arn = aws_iam_policy.policy.arn
 }
+
+data "aws_iam_policy_document" "sally_lambda_inline" {
+  statement {
+    effect    = "Allow"
+    actions   = ["lambda:InvokeFunction"]
+    resources = ["arn:aws:lambda:us-east-1:123456789012:function:test-lambda"]
+  }
+}
+
+resource "aws_iam_user_policy" "sally_inline" {
+  name   = "InvokeTestLambdaInline"
+  user   = aws_iam_user.sally.name
+  policy = data.aws_iam_policy_document.sally_lambda_inline.json
+}
